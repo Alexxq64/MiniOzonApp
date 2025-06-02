@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'core',
+    'mptt',  # Добавляем mptt
 ]
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', 
@@ -59,8 +61,8 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [BASE_DIR / "templates"],  # Добавляем путь к папке шаблонов
+        'APP_DIRS': True,  # Django будет искать шаблоны в папках приложений
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',

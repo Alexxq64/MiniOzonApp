@@ -1,28 +1,29 @@
+# core/models.py
 from django.db import models
+from mptt.models import MPTTModel, TreeForeignKey
 
-class Category(models.Model):
+class Category(MPTTModel):
     name = models.CharField(max_length=100, unique=True, verbose_name="Название категории")
-    parent = models.ForeignKey(
-        'self',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name='subcategories',
+    parent = TreeForeignKey(
+        'self', 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True, 
+        related_name='subcategories', 
         verbose_name='Родительская категория'
     )
 
     def __str__(self):
-        full_path = [self.name]
-        parent = self.parent
-        while parent:
-            full_path.append(parent.name)
-            parent = parent.parent
-        return " → ".join(reversed(full_path))
+        return self.name
 
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
-# models.py
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+
 class Product(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
@@ -39,4 +40,3 @@ class Product(models.Model):
     class Meta:
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
-
