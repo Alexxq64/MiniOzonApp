@@ -1,20 +1,40 @@
-# core/admin.py
 from django.contrib import admin
-from mptt.admin import DraggableMPTTAdmin  # Используем DraggableMPTTAdmin для отображения дерева категорий
-from .models import Category, Product
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from mptt.admin import DraggableMPTTAdmin
 
-class CategoryAdmin(DraggableMPTTAdmin):  # Используем DraggableMPTTAdmin вместо MPTTModelAdmin
-    list_display = ('name', 'parent')  # Отображаем имя и родительскую категорию
-    search_fields = ('name',)  # Возможность поиска по имени
-    list_filter = ('parent',)  # Фильтруем по родительским категориям
-    ordering = ['parent']  # Устанавливаем сортировку по родителю
-    list_display_links = ('name',)  # Указываем, что поле 'name' будет ссылкой для редактирования
+from .models import Category, Product, User  # не забудь импортировать User
+
+class CategoryAdmin(DraggableMPTTAdmin):
+    list_display = ('name', 'parent')
+    search_fields = ('name',)
+    list_filter = ('parent',)
+    ordering = ['parent']
+    list_display_links = ('name',)
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'price')  # Показываем имя, категорию и цену
-    list_filter = ('category',)  # Фильтруем по категориям
-    search_fields = ('name',)  # Возможность поиска по имени
+    list_display = ('name', 'category', 'price')
+    list_filter = ('category',)
+    search_fields = ('name',)
 
-# Регистрируем модели в админке
+class UserAdmin(BaseUserAdmin):
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Личная информация', {'fields': ('first_name', 'last_name', 'email')}),
+        ('Роль и права', {'fields': ('role', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Даты', {'fields': ('last_login', 'date_joined')}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'role', 'password1', 'password2'),
+        }),
+    )
+    list_display = ('username', 'email', 'role', 'is_staff')
+    list_filter = ('role', 'is_staff', 'is_superuser', 'is_active')
+    search_fields = ('username', 'email')
+    ordering = ('username',)
+
+# Регистрация моделей
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
+admin.site.register(User, UserAdmin)
