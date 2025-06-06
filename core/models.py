@@ -123,6 +123,11 @@ class Order(models.Model):
     def __str__(self):
         return f"Заказ #{self.pk} от {self.user.username}"
 
+    def update_total(self):
+        total = sum(item.product.price * item.quantity for item in self.items.all())
+        self.total = total
+        self.save(update_fields=['total'])
+
     class Meta:
         verbose_name = "Заказ"
         verbose_name_plural = "Заказы"

@@ -42,8 +42,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'core',
-    'mptt',  # Добавляем mptt
+    # 'core',
+    'core.apps.CoreConfig',
+    'mptt',  
 ]
 
 
