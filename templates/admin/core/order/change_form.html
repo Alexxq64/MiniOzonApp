@@ -1,0 +1,24 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block after_field_sets %}
+  {% if original %}
+    <div style="margin: 20px 0;">
+      {% if original.status != 'processing' %}
+        <a class="button" href="../../{{ original.id }}/mark-processing/" style="margin-right: 10px;">
+          {% trans "В обработке" %}
+        </a>
+      {% endif %}
+      {% if original.status != 'completed' %}
+        <a class="button" href="../../{{ original.id }}/mark-completed/" style="margin-right: 10px;">
+          {% trans "Завершён" %}
+        </a>
+      {% endif %}
+      {% if original.status != 'canceled' %}
+        <a class="button" href="../../{{ original.id }}/mark-canceled/" style="margin-right: 10px;">
+          {% trans "Отменён" %}
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock %}

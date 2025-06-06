@@ -1,11 +1,16 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.urls import path
+from django.shortcuts import redirect
+from django.contrib import messages
+from django.utils.html import format_html
 from mptt.admin import DraggableMPTTAdmin
 
 from .models import (
     Category, Product, User,
     Cart, CartItem,
-    Order, OrderItem
+    Order, OrderItem,
+    OrderStatus
 )
 
 # --- Category ---
@@ -66,6 +71,29 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ('user__username',)
     date_hierarchy = 'created_at'
     inlines = [OrderItemInline]
+    change_form_template = 'admin/core/order/change_form.html'
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('<int:order_id>/mark-<str:status>/', self.admin_site.admin_view(self.mark_status), name='order-mark-status'),
+        ]
+        return custom_urls + urls
+
+    def mark_status(self, request, order_id, status):
+        order = self.get_object(request, order_id)
+        if not order:
+            self.message_user(request, "Заказ не найден.", level=messages.ERROR)
+            return redirect("..")
+
+        if status not in OrderStatus.values:
+            self.message_user(request, f"Недопустимый статус: {status}", level=messages.ERROR)
+        else:
+            order.status = status
+            order.save()
+            self.message_user(request, f"Статус заказа №{order.id} обновлён на «{OrderStatus(status).label}».", level=messages.SUCCESS)
+
+        return redirect(f"../../{order_id}/change/")
 
 # --- Admins for items (optional) ---
 class CartItemAdmin(admin.ModelAdmin):

@@ -37,8 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
 
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
     'core',
     'mptt',  # Добавляем mptt
@@ -98,11 +100,20 @@ DATABASES = {
 
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',  # ⬅️ позволяет видеть удобную HTML-страницу API
-    ]
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
+
+
 
 
 # Password validation
