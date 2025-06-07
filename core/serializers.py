@@ -6,6 +6,7 @@ from rest_framework import serializers
 from core.models import Category
 from .models import Cart, CartItem
 from rest_framework import serializers
+
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = serializers.SerializerMethodField()
 

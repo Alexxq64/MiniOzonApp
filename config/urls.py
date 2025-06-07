@@ -1,12 +1,16 @@
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from core.views import CartView, CreateOrderView, OrderListView, ProductViewSet, RegisterView, LoginView, CategoryViewSet, UpdateCartItemView
-from core.views import AddToCartView
+from core.views import CartView, CreateOrderView, OrderListView, ProductViewSet, RegisterView
+from core.views import AddToCartView, LoginView, CategoryViewSet, UpdateCartItemView
 
 router = DefaultRouter()
 router.register(r'products', ProductViewSet, basename='product')
 router.register(r'categories', CategoryViewSet, basename='category')
+
+admin.site.site_header = "Администрация Mini-Ozon"
+admin.site.site_title = "Админка Mini-Ozon"
+admin.site.index_title = "Добро пожаловать в Администрацию Mini-Ozon"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
